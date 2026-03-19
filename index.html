@@ -1,0 +1,774 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>その人らしい色</title>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@300&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg: #eef5f0;
+      --surface: rgba(255,255,255,0.84);
+      --border: #c8dece;
+      --border-light: #daeede;
+      --text: #3d5248;
+      --text-mid: #5a7268;
+      --muted: #8faa98;
+      --soft: #f0f8f2;
+      --accent: #5a8c6e;
+      --accent-light: #7ab494;
+      --font-ja: 'Hiragino Kaku Gothic ProN', 'Hiragino Sans', 'ヒラギノ角ゴ ProN W3', 'Yu Gothic', sans-serif;
+    }
+
+    html, body { min-height: 100%; }
+
+    body {
+      background: var(--bg);
+      background-image:
+        radial-gradient(ellipse at 0% 0%, rgba(180,220,195,0.35) 0%, transparent 50%),
+        radial-gradient(ellipse at 100% 100%, rgba(160,210,220,0.25) 0%, transparent 50%),
+        radial-gradient(ellipse at 50% 40%, rgba(230,245,235,0.4) 0%, transparent 60%);
+      color: var(--text);
+      font-family: var(--font-ja);
+      font-weight: 300;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 32px 16px 56px;
+      position: relative;
+      overflow-x: hidden;
+    }
+
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 10px;
+      border: 1.5px solid rgba(140,190,160,0.35);
+      border-radius: 24px;
+      pointer-events: none;
+      z-index: 0;
+    }
+    body::after {
+      content: '';
+      position: fixed;
+      inset: 16px;
+      border: 1px solid rgba(140,190,160,0.18);
+      border-radius: 20px;
+      pointer-events: none;
+      z-index: 0;
+    }
+    .corner {
+      position: fixed;
+      width: 22px; height: 22px;
+      border-color: rgba(100,160,125,0.45);
+      border-style: solid;
+      z-index: 1;
+      pointer-events: none;
+    }
+    .corner.tl { top:22px;    left:22px;   border-width:2px 0 0 2px; border-radius:5px 0 0 0; }
+    .corner.tr { top:22px;    right:22px;  border-width:2px 2px 0 0; border-radius:0 5px 0 0; }
+    .corner.bl { bottom:22px; left:22px;   border-width:0 0 2px 2px; border-radius:0 0 0 5px; }
+    .corner.br { bottom:22px; right:22px;  border-width:0 2px 2px 0; border-radius:0 0 5px 0; }
+
+    /* ════════════════════════════
+       画面切り替え
+    ════════════════════════════ */
+    .screen {
+      position: relative;
+      z-index: 2;
+      width: 100%;
+      max-width: 380px;
+      display: none;
+      flex-direction: column;
+      align-items: center;
+    }
+    .screen.active { display: flex; }
+
+    .screen.active .header        { animation: fadeUp 0.5s 0.05s ease both; }
+    .screen.active .name-card     { animation: fadeUp 0.5s 0.15s ease both; }
+    .screen.active .relation-card { animation: fadeUp 0.5s 0.25s ease both; }
+    .screen.active .wheel-area    { animation: fadeUp 0.5s 0.35s ease both; }
+    .screen.active .slider-card   { animation: fadeUp 0.5s 0.42s ease both; }
+    .screen.active .panel-color   { animation: fadeUp 0.5s 0.48s ease both; }
+    .screen.active .reason-card   { animation: fadeUp 0.5s 0.54s ease both; }
+    .screen.active .btn-primary   { animation: fadeUp 0.5s 0.60s ease both; }
+    .screen.active .footer        { animation: fadeUp 0.5s 0.66s ease both; }
+
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(18px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    /* ── ヘッダー ── */
+    .header { text-align: center; margin-bottom: 28px; }
+    .header .eyebrow {
+      font-family: 'DM Mono', monospace;
+      font-size: 10px;
+      letter-spacing: 0.22em;
+      color: var(--muted);
+      text-transform: uppercase;
+      margin-bottom: 12px;
+    }
+    .header h1 {
+      font-family: var(--font-ja);
+      font-weight: 300;
+      font-size: clamp(19px, 5vw, 25px);
+      letter-spacing: 0.12em;
+      line-height: 1.75;
+      color: #6e9980;
+    }
+    .header .sub {
+      margin-top: 10px;
+      font-size: 13px;
+      color: var(--text-mid);
+      letter-spacing: 0.05em;
+      line-height: 2;
+      font-weight: 300;
+    }
+
+    /* ── カード ── */
+    .card {
+      width: 100%;
+      background: var(--surface);
+      border: 1px solid var(--border-light);
+      border-radius: 22px;
+      padding: 20px 20px 16px;
+      box-shadow: 0 2px 18px rgba(80,130,100,0.07);
+      backdrop-filter: blur(8px);
+    }
+    .card-label {
+      font-size: 13px;
+      color: var(--text);
+      letter-spacing: 0.06em;
+      margin-bottom: 12px;
+      line-height: 1.6;
+      font-weight: 300;
+    }
+    .card-label .required {
+      display: inline-block;
+      font-size: 10px;
+      color: #fff;
+      background: var(--accent-light);
+      border-radius: 4px;
+      padding: 1px 6px;
+      margin-left: 6px;
+      font-family: 'DM Mono', monospace;
+      vertical-align: middle;
+    }
+
+    /* ── 名前入力 ── */
+    .name-card { margin-bottom: 20px; }
+    .name-input {
+      width: 100%;
+      background: var(--soft);
+      border: 1.5px solid var(--border-light);
+      border-radius: 14px;
+      padding: 13px 16px;
+      font-family: var(--font-ja);
+      font-weight: 300;
+      font-size: 15px;
+      color: var(--text);
+      letter-spacing: 0.05em;
+      outline: none;
+      transition: border-color 0.2s, box-shadow 0.2s;
+    }
+    .name-input::placeholder { color: #b8ccbe; }
+    .name-input:focus {
+      border-color: var(--accent-light);
+      box-shadow: 0 0 0 3px rgba(90,140,110,0.1);
+    }
+
+    /* ── 関係性 ── */
+    .relation-card { margin-bottom: 20px; }
+    .relation-options { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; }
+    .relation-btn {
+      position: relative;
+      overflow: hidden;
+      padding: 11px 6px;
+      background: var(--soft);
+      border: 1.5px solid var(--border);
+      border-radius: 13px;
+      font-family: var(--font-ja);
+      font-weight: 300;
+      font-size: 13px;
+      color: var(--text-mid);
+      cursor: pointer;
+      text-align: center;
+      transition: border-color 0.2s, background 0.2s, color 0.2s, transform 0.15s;
+      line-height: 1.4;
+    }
+    .relation-btn .icon { display: block; font-size: 18px; margin-bottom: 3px; }
+    .relation-btn:hover { border-color: var(--accent-light); background: #e8f5ee; transform: translateY(-2px); }
+    .relation-btn.selected { background: var(--accent); border-color: var(--accent); color: #fff; transform: translateY(-2px); }
+
+    .ripple {
+      position: absolute;
+      border-radius: 50%;
+      background: rgba(255,255,255,0.5);
+      transform: scale(0);
+      animation: rippleAnim 0.55s linear;
+      pointer-events: none;
+    }
+    @keyframes rippleAnim {
+      to { transform: scale(4); opacity: 0; }
+    }
+
+    /* ── 色相環 ── */
+    .wheel-area {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 18px;
+      width: 100%;
+      margin-bottom: 20px;
+    }
+    .wheel-wrapper {
+      position: relative;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      filter: drop-shadow(0 5px 18px rgba(80,130,100,0.15));
+    }
+    canvas#colorWheel { display: block; border-radius: 50%; cursor: crosshair; touch-action: none; }
+    #cursor-dot {
+      position: absolute;
+      width: 20px; height: 20px;
+      border-radius: 50%;
+      border: 2.5px solid rgba(255,255,255,0.95);
+      box-shadow: 0 0 0 1.5px rgba(0,0,0,0.1), 0 2px 10px rgba(0,0,0,0.14);
+      pointer-events: none;
+      transform: translate(-50%,-50%);
+      transition: opacity 0.25s;
+      opacity: 0;
+      z-index: 10;
+    }
+
+    /* ── 明度スライダー ── */
+    .slider-card { margin-bottom: 20px; }
+    .slider-tips { display: flex; justify-content: space-between; align-items: center; margin-bottom: 9px; }
+    .slider-tip { font-size: 12px; color: var(--text-mid); display: flex; align-items: center; gap: 5px; font-weight: 300; }
+    .tip-swatch { width: 11px; height: 11px; border-radius: 50%; border: 1px solid var(--border); flex-shrink: 0; }
+    .lightness-track { position: relative; height: 30px; border-radius: 15px; cursor: pointer; touch-action: none; }
+    .lightness-track canvas { width: 100%; height: 100%; border-radius: 15px; display: block; }
+    .slider-thumb {
+      position: absolute; top: 50%;
+      width: 24px; height: 24px;
+      border-radius: 50%;
+      border: 3px solid #fff;
+      box-shadow: 0 1px 6px rgba(0,0,0,0.15), 0 0 0 1px rgba(0,0,0,0.06);
+      transform: translate(-50%,-50%);
+      pointer-events: none;
+    }
+
+    /* ── カラーパネル ── */
+    .panel-color { margin-bottom: 20px; }
+    .color-preview-row { display: flex; align-items: center; gap: 14px; margin-bottom: 13px; }
+    #color-swatch {
+      width: 52px; height: 52px;
+      border-radius: 14px;
+      background: #c8dece;
+      border: 1px solid rgba(0,0,0,0.05);
+      flex-shrink: 0;
+      transition: background 0.1s;
+    }
+    #color-swatch.pop { animation: swatchPop 0.3s ease; }
+    @keyframes swatchPop {
+      0%   { transform: scale(1); }
+      40%  { transform: scale(1.12); }
+      100% { transform: scale(1); }
+    }
+    .color-info { flex: 1; }
+    .color-label { font-size: 10px; color: var(--muted); letter-spacing: 0.12em; margin-bottom: 4px; font-family: 'DM Mono', monospace; }
+    #colorCode { font-family: 'DM Mono', monospace; font-size: 20px; color: var(--text); letter-spacing: 0.04em; }
+    .rgb-row { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 7px; }
+    .rgb-chip { background: var(--soft); border: 1px solid var(--border-light); border-radius: 11px; padding: 7px 6px; text-align: center; }
+    .rgb-chip .ch { font-family: 'DM Mono', monospace; font-size: 10px; color: var(--muted); letter-spacing: 0.1em; margin-bottom: 2px; }
+    .rgb-chip .val { font-family: 'DM Mono', monospace; font-size: 13px; color: var(--text); }
+
+    /* ── 理由（必須） ── */
+    .reason-card { margin-bottom: 20px; }
+    textarea {
+      width: 100%;
+      min-height: 100px;
+      background: var(--soft);
+      border: 1.5px solid var(--border-light);
+      border-radius: 14px;
+      padding: 13px 15px;
+      font-family: var(--font-ja);
+      font-weight: 300;
+      font-size: 14px;
+      color: var(--text);
+      line-height: 1.85;
+      resize: vertical;
+      outline: none;
+      transition: border-color 0.2s, box-shadow 0.2s;
+      margin-top: 10px;
+    }
+    textarea::placeholder { color: #b8ccbe; }
+    textarea:focus { border-color: var(--accent-light); box-shadow: 0 0 0 3px rgba(90,140,110,0.1); }
+
+    /* ── ボタン ── */
+    .btn-primary {
+      position: relative;
+      overflow: hidden;
+      width: 100%;
+      padding: 16px;
+      background: var(--accent);
+      color: #fff;
+      border: none;
+      border-radius: 16px;
+      font-family: var(--font-ja);
+      font-weight: 300;
+      font-size: 15px;
+      letter-spacing: 0.12em;
+      cursor: pointer;
+      transition: background 0.2s, transform 0.15s, box-shadow 0.2s;
+      box-shadow: 0 3px 14px rgba(80,130,100,0.22);
+      margin-bottom: 10px;
+    }
+    .btn-primary:hover { background: #4a7a5e; transform: translateY(-1px); box-shadow: 0 5px 18px rgba(80,130,100,0.3); }
+    .btn-primary:active { transform: scale(0.98); }
+    .btn-back {
+      width: 100%;
+      padding: 13px;
+      background: transparent;
+      color: var(--muted);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      font-family: var(--font-ja);
+      font-weight: 300;
+      font-size: 13px;
+      letter-spacing: 0.08em;
+      cursor: pointer;
+      transition: background 0.2s, color 0.2s;
+      margin-bottom: 10px;
+    }
+    .btn-back:hover { background: var(--soft); color: var(--text); }
+
+    /* ── 確認画面 ── */
+    .confirm-title { font-family: var(--font-ja); font-weight: 300; font-size: 20px; color: #6e9980; letter-spacing: 0.1em; text-align: center; margin-bottom: 8px; }
+    .confirm-sub { font-size: 12px; color: var(--muted); text-align: center; letter-spacing: 0.04em; margin-bottom: 28px; line-height: 1.8; font-weight: 300; }
+    .confirm-card {
+      width: 100%;
+      background: var(--surface);
+      border: 1px solid var(--border-light);
+      border-radius: 22px;
+      padding: 22px 22px 18px;
+      box-shadow: 0 2px 18px rgba(80,130,100,0.07);
+      margin-bottom: 16px;
+    }
+    .confirm-row { display: flex; align-items: flex-start; gap: 14px; padding: 12px 0; border-bottom: 1px solid var(--border-light); }
+    .confirm-row:last-child { border-bottom: none; padding-bottom: 0; }
+    .confirm-row:first-child { padding-top: 0; }
+    .confirm-key { font-size: 11px; color: var(--muted); letter-spacing: 0.1em; font-family: 'DM Mono', monospace; min-width: 90px; padding-top: 2px; }
+    .confirm-val { font-size: 14px; color: var(--text); letter-spacing: 0.04em; line-height: 1.7; flex: 1; font-weight: 300; }
+    .confirm-color-row { display: flex; align-items: center; gap: 10px; }
+    .confirm-swatch { width: 28px; height: 28px; border-radius: 8px; border: 1px solid rgba(0,0,0,0.06); flex-shrink: 0; }
+    .confirm-hex { font-family: 'DM Mono', monospace; font-size: 16px; color: var(--text); }
+
+    /* ── 完了画面 ── */
+    .complete-wrap { display: flex; flex-direction: column; align-items: center; text-align: center; padding: 20px 0 0; width: 100%; }
+
+    .complete-icon-wrap {
+      position: relative;
+      width: 72px; height: 72px;
+      margin-bottom: 22px;
+    }
+    .complete-icon {
+      width: 72px; height: 72px;
+      background: var(--accent);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 32px;
+      box-shadow: 0 4px 20px rgba(80,130,100,0.25);
+      animation: popIn 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275) both;
+      position: relative;
+      z-index: 1;
+    }
+    /* 波紋：2回だけ */
+    .pulse-ring {
+      position: absolute;
+      inset: 0;
+      border-radius: 50%;
+      border: 2px solid var(--accent);
+      animation: pulseRing 0.9s ease-out both;
+    }
+    .pulse-ring:nth-child(2) { animation-delay: 0.5s; }
+    @keyframes pulseRing {
+      0%   { transform: scale(1);   opacity: 0.6; }
+      100% { transform: scale(2.4); opacity: 0; }
+    }
+    @keyframes popIn {
+      from { transform: scale(0.4); opacity: 0; }
+      to   { transform: scale(1);   opacity: 1; }
+    }
+    .complete-title { font-family: var(--font-ja); font-weight: 300; font-size: 22px; color: #6e9980; letter-spacing: 0.1em; margin-bottom: 12px; animation: fadeUp 0.5s 0.3s ease both; }
+    .complete-msg { font-size: 13px; color: var(--text-mid); letter-spacing: 0.05em; line-height: 2.1; margin-bottom: 32px; font-weight: 300; animation: fadeUp 0.5s 0.4s ease both; }
+    .complete-summary { width: 100%; background: var(--surface); border: 1px solid var(--border-light); border-radius: 20px; padding: 18px 20px; margin-bottom: 28px; text-align: left; animation: fadeUp 0.5s 0.5s ease both; }
+    .complete-summary .confirm-row { padding: 10px 0; }
+
+    /* ── フッター ── */
+    .footer { width: 100%; margin-top: 28px; padding-top: 22px; border-top: 1px solid rgba(140,190,160,0.35); display: flex; flex-direction: column; gap: 10px; text-align: center; }
+    .footer-thanks { font-size: 13px; color: var(--text-mid); letter-spacing: 0.06em; line-height: 2.1; font-weight: 300; }
+    .footer-privacy { font-size: 12px; color: var(--text-mid); background: rgba(255,255,255,0.6); border: 1px solid var(--border-light); border-radius: 12px; padding: 11px 15px; line-height: 1.9; font-weight: 300; }
+    .footer-profile { font-size: 12.5px; color: var(--text-mid); line-height: 2.1; font-weight: 300; }
+    .footer-profile strong { color: var(--text); font-weight: 600; }
+    .footer-profile a { color: var(--accent); text-decoration: none; border-bottom: 1px solid rgba(90,140,110,0.3); padding-bottom: 1px; }
+
+    /* ── トースト ── */
+    .toast {
+      position: fixed;
+      bottom: 28px; left: 50%;
+      transform: translateX(-50%) translateY(16px);
+      background: var(--text); color: #fff;
+      padding: 11px 24px;
+      border-radius: 100px;
+      font-size: 12px;
+      font-family: var(--font-ja);
+      font-weight: 300;
+      opacity: 0;
+      transition: opacity 0.22s, transform 0.22s;
+      pointer-events: none;
+      white-space: nowrap;
+      z-index: 200;
+    }
+    .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+  </style>
+</head>
+<body>
+
+<div class="corner tl"></div>
+<div class="corner tr"></div>
+<div class="corner bl"></div>
+<div class="corner br"></div>
+
+<!-- ════════════════ 画面1：入力 ════════════════ -->
+<div class="screen active" id="screen-main">
+  <div class="header">
+    <div class="eyebrow">color survey</div>
+    <h1>その人らしい色を<br>選んでください</h1>
+    <p class="sub">思い浮かんだ色を、そのまま<br>直感で選んでみてください</p>
+  </div>
+
+  <div class="card name-card">
+    <div class="card-label">色を選ぶ対象者のお名前<span class="required">必須</span></div>
+    <input type="text" class="name-input" id="targetName" placeholder="例：田島 萌絵">
+  </div>
+
+  <div class="card relation-card">
+    <div class="card-label">あなたはその人とどのような関係ですか？<span class="required">必須</span></div>
+    <div class="relation-options">
+      <button class="relation-btn" data-value="本人" onclick="selectRelation(this,event)"><span class="icon">🙋</span>本人</button>
+      <button class="relation-btn" data-value="家族" onclick="selectRelation(this,event)"><span class="icon">👨‍👩‍👧</span>家族</button>
+      <button class="relation-btn" data-value="友人" onclick="selectRelation(this,event)"><span class="icon">🤝</span>友人</button>
+    </div>
+  </div>
+
+  <div class="wheel-area">
+    <div class="wheel-wrapper">
+      <canvas id="colorWheel"></canvas>
+      <div id="cursor-dot"></div>
+    </div>
+  </div>
+
+  <div class="card slider-card">
+    <div class="slider-tips">
+      <span class="slider-tip"><span class="tip-swatch" style="background:#fff;"></span>白・パステル</span>
+      <span class="slider-tip" style="color:var(--muted);font-size:11px;">← 明るさを調節 →</span>
+      <span class="slider-tip" style="flex-direction:row-reverse;"><span class="tip-swatch" style="background:#1a1a1a;border-color:#333;"></span>暗い・黒</span>
+    </div>
+    <div class="lightness-track" id="lightnessTrack">
+      <canvas id="lightnessCanvas"></canvas>
+      <div class="slider-thumb" id="sliderThumb"></div>
+    </div>
+  </div>
+
+  <div class="card panel-color">
+    <div class="color-preview-row">
+      <div id="color-swatch"></div>
+      <div class="color-info">
+        <div class="color-label">selected color</div>
+        <div id="colorCode">#——————</div>
+      </div>
+    </div>
+    <div class="rgb-row">
+      <div class="rgb-chip"><div class="ch">R</div><div class="val" id="val-r">—</div></div>
+      <div class="rgb-chip"><div class="ch">G</div><div class="val" id="val-g">—</div></div>
+      <div class="rgb-chip"><div class="ch">B</div><div class="val" id="val-b">—</div></div>
+    </div>
+  </div>
+
+  <div class="card reason-card">
+    <div class="card-label">なぜその色を選びましたか？<span class="required">必須</span></div>
+    <textarea id="reason" placeholder="例：穏やかで落ち着いた印象がするから、いつも優しい雰囲気に見えるから…"></textarea>
+  </div>
+
+  <button class="btn-primary" onclick="goToConfirm(event)">内容を確認する →</button>
+
+  <div class="footer">
+    <div class="footer-thanks">ご協力いただき、ありがとうございます。<br>みなさんの回答が研究の大切な一部になります。</div>
+    <div class="footer-privacy">✦ いただいた情報は研究目的のみに使用し、<br>それ以外の目的では一切使用いたしません。</div>
+    <div class="footer-profile">
+      九州大学大学院 芸術工学府 修士2年<br>
+      <strong>田島 萌絵</strong><br>
+      <a href="mailto:tajima.moe.457@s.kyushu-u.ac.jp">tajima.moe.457@s.kyushu-u.ac.jp</a>
+    </div>
+  </div>
+</div>
+
+<!-- ════════════════ 画面2：確認 ════════════════ -->
+<div class="screen" id="screen-confirm">
+  <div class="header" style="margin-bottom:20px;"><div class="eyebrow">confirm</div></div>
+  <p class="confirm-title">送信内容の確認</p>
+  <p class="confirm-sub">以下の内容で送信します。<br>よろしければ「送信する」を押してください。</p>
+  <div class="confirm-card">
+    <div class="confirm-row"><div class="confirm-key">対象者</div><div class="confirm-val" id="cf-name">—</div></div>
+    <div class="confirm-row"><div class="confirm-key">関係性</div><div class="confirm-val" id="cf-relation">—</div></div>
+    <div class="confirm-row">
+      <div class="confirm-key">カラーコード</div>
+      <div class="confirm-val"><div class="confirm-color-row"><div class="confirm-swatch" id="cf-swatch"></div><span class="confirm-hex" id="cf-hex">—</span></div></div>
+    </div>
+    <div class="confirm-row"><div class="confirm-key">理由</div><div class="confirm-val" id="cf-reason">—</div></div>
+  </div>
+  <button class="btn-primary" onclick="submitData(event)">送信する ✓</button>
+  <button class="btn-back" onclick="goBack('screen-main')">← 戻って修正する</button>
+</div>
+
+<!-- ════════════════ 画面3：完了 ════════════════ -->
+<div class="screen" id="screen-complete">
+  <div class="complete-wrap">
+    <div class="complete-icon-wrap">
+      <div class="pulse-ring"></div>
+      <div class="pulse-ring"></div>
+      <div class="complete-icon">✓</div>
+    </div>
+    <p class="complete-title">送信しました</p>
+    <p class="complete-msg">ご回答ありがとうございました。<br>あなたの回答は研究に役立てられます。</p>
+    <div class="complete-summary">
+      <div class="confirm-row" style="padding-top:0;"><div class="confirm-key">対象者</div><div class="confirm-val" id="done-name">—</div></div>
+      <div class="confirm-row"><div class="confirm-key">関係性</div><div class="confirm-val" id="done-relation">—</div></div>
+      <div class="confirm-row">
+        <div class="confirm-key">カラーコード</div>
+        <div class="confirm-val"><div class="confirm-color-row"><div class="confirm-swatch" id="done-swatch"></div><span class="confirm-hex" id="done-hex">—</span></div></div>
+      </div>
+      <div class="confirm-row"><div class="confirm-key">理由</div><div class="confirm-val" id="done-reason">—</div></div>
+    </div>
+    <div class="footer" style="margin-top:0;">
+      <div class="footer-privacy">✦ いただいた情報は研究目的のみに使用し、<br>それ以外の目的では一切使用いたしません。</div>
+      <div class="footer-profile">
+        九州大学大学院 芸術工学府 修士2年<br>
+        <strong>田島 萌絵</strong><br>
+        <a href="mailto:tajima.moe.457@s.kyushu-u.ac.jp">tajima.moe.457@s.kyushu-u.ac.jp</a>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+/* ── 波紋 ── */
+function createRipple(el, e) {
+  const rect = el.getBoundingClientRect();
+  const x = (e.touches ? e.touches[0].clientX : e.clientX) - rect.left;
+  const y = (e.touches ? e.touches[0].clientY : e.clientY) - rect.top;
+  const size = Math.max(rect.width, rect.height) * 1.5;
+  const r = document.createElement('span');
+  r.className = 'ripple';
+  r.style.cssText = `width:${size}px;height:${size}px;left:${x-size/2}px;top:${y-size/2}px;`;
+  el.appendChild(r);
+  setTimeout(() => r.remove(), 600);
+}
+
+/* ── 色相環 ── */
+const wheelCanvas = document.getElementById('colorWheel');
+const wCtx   = wheelCanvas.getContext('2d');
+const dot    = document.getElementById('cursor-dot');
+const swEl   = document.getElementById('color-swatch');
+const codeEl = document.getElementById('colorCode');
+const toastEl= document.getElementById('toast');
+const lTrack = document.getElementById('lightnessTrack');
+const lCanvas= document.getElementById('lightnessCanvas');
+const lCtx   = lCanvas.getContext('2d');
+const thumb  = document.getElementById('sliderThumb');
+
+const WSIZE = Math.min(window.innerWidth - 80, 280);
+wheelCanvas.width = WSIZE; wheelCanvas.height = WSIZE;
+const R = WSIZE / 2;
+
+let lightness = 0.5, pickedHue = 0, pickedSat = 0;
+let selectedHex = null, selectedRelation = null;
+
+function hsl2rgb(h,s,l){
+  if(!s){const v=Math.round(l*255);return[v,v,v];}
+  const q=l<.5?l*(1+s):l+s-l*s,p=2*l-q;
+  return[h2r(p,q,h+1/3),h2r(p,q,h),h2r(p,q,h-1/3)].map(x=>Math.round(x*255));
+}
+function h2r(p,q,t){
+  if(t<0)t+=1;if(t>1)t-=1;
+  if(t<1/6)return p+(q-p)*6*t;
+  if(t<.5)return q;
+  if(t<2/3)return p+(q-p)*(2/3-t)*6;
+  return p;
+}
+function toHex(v){return Math.round(v).toString(16).padStart(2,'0');}
+function rgbToHex(r,g,b){return`#${toHex(r)}${toHex(g)}${toHex(b)}`;}
+
+function drawWheel(){
+  const img=wCtx.createImageData(WSIZE,WSIZE),d=img.data,L=lightness;
+  for(let y=0;y<WSIZE;y++){
+    for(let x=0;x<WSIZE;x++){
+      const dx=x-R,dy=y-R,dist=Math.sqrt(dx*dx+dy*dy);
+      if(dist>R)continue;
+      const hue=((Math.atan2(dy,dx)*180/Math.PI)+360)%360;
+      const[r,g,b]=hsl2rgb(hue/360,dist/R,L);
+      const alpha=dist>R-1.5?Math.max(0,(R-dist)/1.5):1;
+      const i=(y*WSIZE+x)*4;
+      d[i]=r;d[i+1]=g;d[i+2]=b;d[i+3]=Math.round(alpha*255);
+    }
+  }
+  wCtx.putImageData(img,0,0);
+}
+
+function drawLightnessBar(){
+  const W=lCanvas.width,H=lCanvas.height;
+  const mid=hsl2rgb(pickedHue/360,Math.max(pickedSat,0.7),0.5);
+  const grad=lCtx.createLinearGradient(0,0,W,0);
+  grad.addColorStop(0,'#ffffff');
+  grad.addColorStop(0.5,`rgb(${mid[0]},${mid[1]},${mid[2]})`);
+  grad.addColorStop(1,'#1a1a1a');
+  lCtx.clearRect(0,0,W,H);
+  lCtx.fillStyle=grad;
+  const rr=H/2;
+  lCtx.beginPath();
+  lCtx.moveTo(rr,0);lCtx.lineTo(W-rr,0);
+  lCtx.quadraticCurveTo(W,0,W,rr);lCtx.lineTo(W,H-rr);
+  lCtx.quadraticCurveTo(W,H,W-rr,H);lCtx.lineTo(rr,H);
+  lCtx.quadraticCurveTo(0,H,0,H-rr);lCtx.lineTo(0,rr);
+  lCtx.quadraticCurveTo(0,0,rr,0);
+  lCtx.fill();
+}
+function updateThumb(){
+  const W=lTrack.offsetWidth;
+  thumb.style.left=((1-lightness)*W)+'px';
+  const[r,g,b]=hsl2rgb(pickedHue/360,pickedSat,lightness);
+  thumb.style.background=`rgb(${r},${g},${b})`;
+}
+
+function pickFromWheel(ex,ey){
+  const rect=wheelCanvas.getBoundingClientRect();
+  const sx=WSIZE/rect.width,sy=WSIZE/rect.height;
+  const x=(ex-rect.left)*sx,y=(ey-rect.top)*sy;
+  const dx=x-R,dy=y-R;
+  if(Math.sqrt(dx*dx+dy*dy)>R)return;
+  dot.style.left=(x/sx)+'px';dot.style.top=(y/sy)+'px';dot.style.opacity='1';
+  pickedHue=((Math.atan2(dy,dx)*180/Math.PI)+360)%360;
+  pickedSat=Math.sqrt(dx*dx+dy*dy)/R;
+  updateColor();drawLightnessBar();updateThumb();
+}
+function pickFromSlider(ex){
+  const rect=lTrack.getBoundingClientRect();
+  lightness=1-Math.max(0,Math.min(1,(ex-rect.left)/rect.width));
+  updateColor();drawWheel();updateThumb();
+}
+function updateColor(){
+  const[r,g,b]=hsl2rgb(pickedHue/360,pickedSat,lightness);
+  const hex=rgbToHex(r,g,b).toUpperCase();
+  selectedHex=hex;
+  swEl.style.background=hex;
+  dot.style.background=hex;
+  codeEl.textContent=hex;
+  document.getElementById('val-r').textContent=r;
+  document.getElementById('val-g').textContent=g;
+  document.getElementById('val-b').textContent=b;
+  swEl.classList.remove('pop');
+  void swEl.offsetWidth;
+  swEl.classList.add('pop');
+}
+
+wheelCanvas.addEventListener('mousedown',e=>pickFromWheel(e.clientX,e.clientY));
+wheelCanvas.addEventListener('mousemove',e=>{if(e.buttons)pickFromWheel(e.clientX,e.clientY);});
+wheelCanvas.addEventListener('touchstart',e=>{e.preventDefault();pickFromWheel(e.touches[0].clientX,e.touches[0].clientY);},{passive:false});
+wheelCanvas.addEventListener('touchmove',e=>{e.preventDefault();pickFromWheel(e.touches[0].clientX,e.touches[0].clientY);},{passive:false});
+lTrack.addEventListener('mousedown',e=>pickFromSlider(e.clientX));
+lTrack.addEventListener('mousemove',e=>{if(e.buttons)pickFromSlider(e.clientX);});
+lTrack.addEventListener('touchstart',e=>{e.preventDefault();pickFromSlider(e.touches[0].clientX);},{passive:false});
+lTrack.addEventListener('touchmove',e=>{e.preventDefault();pickFromSlider(e.touches[0].clientX);},{passive:false});
+
+function selectRelation(btn,e){
+  createRipple(btn,e);
+  document.querySelectorAll('.relation-btn').forEach(b=>b.classList.remove('selected'));
+  btn.classList.add('selected');
+  selectedRelation=btn.dataset.value;
+}
+
+function showScreen(id){
+  document.querySelectorAll('.screen').forEach(s=>{s.classList.remove('active');s.style.animation='none';});
+  const t=document.getElementById(id);
+  void t.offsetWidth;
+  t.style.animation='';
+  t.classList.add('active');
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+function goBack(id){ showScreen(id); }
+
+function showToast(msg){
+  toastEl.textContent=msg;
+  toastEl.classList.add('show');
+  setTimeout(()=>toastEl.classList.remove('show'),2500);
+}
+
+function goToConfirm(e){
+  createRipple(e.currentTarget,e);
+  const name=document.getElementById('targetName').value.trim();
+  const reason=document.getElementById('reason').value.trim();
+  if(!name){ showToast('対象者のお名前を入力してください'); return; }
+  if(!selectedRelation){ showToast('関係性を選んでください'); return; }
+  if(!selectedHex){ showToast('色を選んでください'); return; }
+  if(!reason){ showToast('色を選んだ理由を入力してください'); return; }
+
+  document.getElementById('cf-name').textContent=name;
+  document.getElementById('cf-relation').textContent=selectedRelation;
+  document.getElementById('cf-swatch').style.background=selectedHex;
+  document.getElementById('cf-hex').textContent=selectedHex;
+  document.getElementById('cf-reason').textContent=reason;
+
+  setTimeout(()=>showScreen('screen-confirm'),150);
+}
+
+function submitData(e){
+  createRipple(e.currentTarget,e);
+  const name=document.getElementById('targetName').value.trim();
+  const reason=document.getElementById('reason').value.trim();
+
+  const formUrl='https://docs.google.com/forms/d/e/1FAIpQLSesTuwlDuP_rebS3V8_owbZBRb3krBV_Fi7raA71DchsQH_dw/formResponse';
+  const body=new URLSearchParams();
+  body.set('entry.2030869641',name);
+  body.set('entry.2073338491',selectedRelation);
+  body.set('entry.1955355819',selectedHex);
+  body.set('entry.184192488',reason);
+  fetch(formUrl,{method:'POST',mode:'no-cors',headers:{'Content-Type':'application/x-www-form-urlencoded'},body:body.toString()}).catch(()=>{});
+
+  document.getElementById('done-name').textContent=name;
+  document.getElementById('done-relation').textContent=selectedRelation;
+  document.getElementById('done-swatch').style.background=selectedHex;
+  document.getElementById('done-hex').textContent=selectedHex;
+  document.getElementById('done-reason').textContent=reason;
+
+  setTimeout(()=>showScreen('screen-complete'),180);
+}
+
+function init(){
+  const tw=lTrack.offsetWidth||280,th=30;
+  lCanvas.width=tw;lCanvas.height=th;
+  lCanvas.style.width=tw+'px';lCanvas.style.height=th+'px';
+  drawWheel();drawLightnessBar();updateThumb();
+}
+if(document.fonts){document.fonts.ready.then(init);}else{window.addEventListener('load',init);}
+</script>
+</body>
+</html>
