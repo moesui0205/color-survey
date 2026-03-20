@@ -286,6 +286,16 @@
 
     .optional-badge { font-size: 10px; color: var(--muted); font-family: 'DM Mono', monospace; margin-left: 6px; }
     .reason-card { margin-bottom: 20px; }
+    .reason-hint {
+      font-size: 11.5px;
+      color: var(--muted);
+      letter-spacing: 0.04em;
+      line-height: 1.8;
+      margin-bottom: 10px;
+      font-weight: 300;
+      word-break: keep-all;
+      overflow-wrap: anywhere;
+    }
     textarea { width: 100%; min-height: 100px; background: var(--soft); border: 1.5px solid var(--border-light); border-radius: 14px; padding: 13px 15px; font-family: var(--font-ja); font-weight: 300; font-size: 14px; color: var(--text); line-height: 1.85; resize: vertical; outline: none; transition: border-color 0.2s, box-shadow 0.2s; margin-top: 10px; }
     textarea::placeholder { color: #b8ccbe; }
     textarea:focus { border-color: var(--accent-light); box-shadow: 0 0 0 3px rgba(90,140,110,0.1); }
@@ -430,6 +440,7 @@
 
   <div class="card reason-card">
     <div class="card-label">なぜその色を選びましたか？<span class="required">必須</span></div>
+    <p class="reason-hint">その色を選んだ理由を、できるだけ詳しく教えていただけると大変助かります</p>
     <textarea id="reason" placeholder="例：穏やかで落ち着いた印象がするから、いつも優しい雰囲気に見えるから…"></textarea>
   </div>
 
