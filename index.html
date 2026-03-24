@@ -78,6 +78,8 @@
     .screen.active .reason-card    { animation: fadeUp 0.5s 0.54s ease both; }
     .screen.active .btn-primary    { animation: fadeUp 0.5s 0.60s ease both; }
     .screen.active .footer         { animation: fadeUp 0.5s 0.66s ease both; }
+    .step-badge { display: inline-block; font-family: 'DM Mono', monospace; font-size: 10px; letter-spacing: 0.15em; color: var(--muted); background: rgba(140,190,160,0.15); border: 1px solid var(--border-light); border-radius: 20px; padding: 3px 12px; margin-bottom: 10px; }
+    .step-badge.active { background: var(--accent); color: #fff; border-color: var(--accent); }
 
     @keyframes fadeUp {
       from { opacity: 0; transform: translateY(18px); }
@@ -261,7 +263,19 @@
     .wheel-area { display: flex; flex-direction: column; align-items: center; gap: 18px; width: 100%; margin-bottom: 20px; }
     .wheel-wrapper { position: relative; display: inline-flex; align-items: center; justify-content: center; filter: drop-shadow(0 5px 18px rgba(80,130,100,0.15)); }
     canvas#colorWheel { display: block; border-radius: 50%; cursor: crosshair; touch-action: none; }
-    #cursor-dot { position: absolute; width: 20px; height: 20px; border-radius: 50%; border: 2.5px solid rgba(255,255,255,0.95); box-shadow: 0 0 0 1.5px rgba(0,0,0,0.1), 0 2px 10px rgba(0,0,0,0.14); pointer-events: none; transform: translate(-50%,-50%); transition: opacity 0.25s; opacity: 0; z-index: 10; }
+    #cursor-dot1, #cursor-dot2 {
+      position: absolute;
+      width: 26px;
+      height: 26px;
+      border-radius: 50%;
+      border: 2.5px solid rgba(255,255,255,0.95);
+      box-shadow: 0 0 0 1.5px rgba(0,0,0,0.12), 0 3px 10px rgba(0,0,0,0.2);
+      pointer-events: none;
+      transform: translate(-50%, -130%);
+      transition: opacity 0.25s;
+      opacity: 0;
+      z-index: 10;
+    }
 
     .slider-card { margin-bottom: 20px; }
     .slider-tips { display: flex; justify-content: space-between; align-items: center; margin-bottom: 9px; }
@@ -272,13 +286,13 @@
     .slider-thumb { position: absolute; top: 50%; width: 24px; height: 24px; border-radius: 50%; border: 3px solid #fff; box-shadow: 0 1px 6px rgba(0,0,0,0.15), 0 0 0 1px rgba(0,0,0,0.06); transform: translate(-50%,-50%); pointer-events: none; }
 
     .panel-color { margin-bottom: 20px; }
-    .color-preview-row { display: flex; align-items: center; gap: 14px; margin-bottom: 13px; }
-    #color-swatch { width: 52px; height: 52px; border-radius: 14px; background: #c8dece; border: 1px solid rgba(0,0,0,0.05); flex-shrink: 0; transition: background 0.1s; }
-    #color-swatch.pop { animation: swatchPop 0.3s ease; }
+    .color-preview-row { display: flex; align-items: center; gap: 16px; margin-bottom: 13px; }
+    #color-swatch1, #color-swatch2 { width: 80px; height: 80px; border-radius: 18px; background: #c8dece; border: 1px solid rgba(0,0,0,0.07); flex-shrink: 0; transition: background 0.15s; box-shadow: 0 3px 12px rgba(0,0,0,0.12); }
+    #color-swatch1.pop, #color-swatch2.pop { animation: swatchPop 0.3s ease; }
     @keyframes swatchPop { 0%{transform:scale(1)} 40%{transform:scale(1.12)} 100%{transform:scale(1)} }
     .color-info { flex: 1; }
-    .color-label { font-size: 10px; color: var(--muted); letter-spacing: 0.12em; margin-bottom: 4px; font-family: 'DM Mono', monospace; }
-    #colorCode { font-family: 'DM Mono', monospace; font-size: 20px; color: var(--text); letter-spacing: 0.04em; }
+    .color-label { font-size: 10px; color: var(--muted); letter-spacing: 0.12em; margin-bottom: 6px; font-family: 'DM Mono', monospace; }
+    #colorCode1, #colorCode2 { font-family: 'DM Mono', monospace; font-size: 22px; color: var(--text); letter-spacing: 0.04em; font-weight: 500; }
     .rgb-row { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 7px; }
     .rgb-chip { background: var(--soft); border: 1px solid var(--border-light); border-radius: 11px; padding: 7px 6px; text-align: center; }
     .rgb-chip .ch { font-family: 'DM Mono', monospace; font-size: 10px; color: var(--muted); letter-spacing: 0.1em; margin-bottom: 2px; }
@@ -337,6 +351,13 @@
     .footer-profile strong { color: var(--text); font-weight: 600; }
     .footer-profile a { color: var(--accent); text-decoration: none; border-bottom: 1px solid rgba(90,140,110,0.3); padding-bottom: 1px; }
 
+    .color-section-header { width: 100%; margin-bottom: 14px; }
+    .color-section-num { font-size: 13px; font-weight: 600; color: var(--accent); letter-spacing: 0.08em; margin-bottom: 6px; display: flex; align-items: center; gap: 8px; }
+    .color-section-num::before { content: ''; display: inline-block; width: 3px; height: 16px; background: var(--accent); border-radius: 2px; }
+    .color-section-desc { font-size: 13px; color: var(--text); line-height: 1.85; letter-spacing: 0.04em; font-weight: 300; }
+    .color-section-desc strong { color: var(--accent); font-weight: 500; }
+    .color-section-hint { font-size: 11.5px; color: var(--muted); display: block; margin-top: 4px; }
+    .color-section-divider { width: 100%; height: 1px; background: linear-gradient(to right, transparent, var(--border), transparent); margin: 28px 0; }
     .toast { position: fixed; bottom: 28px; left: 50%; transform: translateX(-50%) translateY(16px); background: var(--text); color: #fff; padding: 11px 24px; border-radius: 100px; font-size: 12px; font-family: var(--font-ja); font-weight: 300; opacity: 0; transition: opacity 0.22s, transform 0.22s; pointer-events: none; white-space: nowrap; z-index: 200; }
     .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
   </style>
@@ -362,9 +383,8 @@
   <div class="intro-bubble">
     はじめまして！九州大学大学院で<strong>デザイン研究</strong>をしている、田島萌絵です🌿<br><br>
     私は<span class="highlight">「その人らしさ」を起点としたプロダクトデザイン</span>の方法論を研究しています。<br><br>
-    このアンケートでは、<strong>ある人を思い浮かべたときにイメージする色</strong>を選んでいただきます。集めた色のデータを通じて、その人らしさをデザインに繋げる方法を探っています。<br><br>
-    色を選ぶときは、<strong>その人が好きな色</strong>や普段選びそうな色ではなく、<strong>その人の性格・雰囲気・印象</strong>から連想される色をイメージしてみてください。<br><br>
-    理由も教えてくださるとありがたいです！
+    このアンケートでは、ある人を思い浮かべて<strong>2つの色</strong>を選んでいただきます。① その人が<strong>好きな色</strong>、② その人の性格・雰囲気・印象から連想される<strong>その人らしい色</strong>です。集めた色のデータを通じて、その人らしさをデザインに繋げる方法を探っています。<br><br>
+    その色を選んだ理由も教えてくださるとありがたいです！
   </div>
 
   <!-- 補足カード -->
@@ -386,8 +406,8 @@
 <div class="screen" id="screen-main">
   <div class="header">
     <div class="eyebrow">color survey</div>
-    <h1>その人らしい色を<br>選んでください</h1>
-    <p class="sub">思い浮かんだ色を、そのまま<br>直感で選んでみてください</p>
+    <h1>2つの色を選んでください</h1>
+    <p class="sub">対象者について、それぞれの観点で<br>色を選んでみてください</p>
   </div>
 
   <div class="card name-card">
@@ -404,10 +424,16 @@
     </div>
   </div>
 
+  <!-- ── 色①：好きな色 ── -->
+  <div class="color-section-header">
+    <div class="color-section-num">① 好きな色</div>
+    <p class="color-section-desc">その人が<strong>普段好んで選ぶ色・お気に入りの色</strong>をイメージして選んでください。<br><span class="color-section-hint">例）いつも青系の服を着ている、赤が好きとよく言っている…など</span></p>
+  </div>
+
   <div class="wheel-area">
     <div class="wheel-wrapper">
-      <canvas id="colorWheel"></canvas>
-      <div id="cursor-dot"></div>
+      <canvas id="colorWheel1"></canvas>
+      <div id="cursor-dot1"></div>
     </div>
   </div>
 
@@ -417,31 +443,80 @@
       <span class="slider-tip" style="color:var(--muted);font-size:11px;">← 明るさを調節 →</span>
       <span class="slider-tip" style="flex-direction:row-reverse;"><span class="tip-swatch" style="background:#1a1a1a;border-color:#333;"></span>暗い・黒</span>
     </div>
-    <div class="lightness-track" id="lightnessTrack">
-      <canvas id="lightnessCanvas"></canvas>
-      <div class="slider-thumb" id="sliderThumb"></div>
+    <div class="lightness-track" id="lightnessTrack1">
+      <canvas id="lightnessCanvas1"></canvas>
+      <div class="slider-thumb" id="sliderThumb1"></div>
     </div>
   </div>
 
   <div class="card panel-color">
     <div class="color-preview-row">
-      <div id="color-swatch"></div>
+      <div id="color-swatch1"></div>
       <div class="color-info">
-        <div class="color-label">selected color</div>
-        <div id="colorCode">#——————</div>
+        <div class="color-label">① 好きな色</div>
+        <div id="colorCode1">#——————</div>
       </div>
     </div>
     <div class="rgb-row">
-      <div class="rgb-chip"><div class="ch">R</div><div class="val" id="val-r">—</div></div>
-      <div class="rgb-chip"><div class="ch">G</div><div class="val" id="val-g">—</div></div>
-      <div class="rgb-chip"><div class="ch">B</div><div class="val" id="val-b">—</div></div>
+      <div class="rgb-chip"><div class="ch">R</div><div class="val" id="val-r1">—</div></div>
+      <div class="rgb-chip"><div class="ch">G</div><div class="val" id="val-g1">—</div></div>
+      <div class="rgb-chip"><div class="ch">B</div><div class="val" id="val-b1">—</div></div>
     </div>
   </div>
 
   <div class="card reason-card">
-    <div class="card-label">なぜその色を選びましたか？<span class="required">必須</span></div>
+    <div class="card-label">① なぜその色を選びましたか？<span class="required">必須</span></div>
     <p class="reason-hint">その色を選んだ理由を、できるだけ詳しく教えていただけると大変助かります</p>
-    <textarea id="reason" placeholder="例：穏やかで落ち着いた印象がするから、いつも優しい雰囲気に見えるから…"></textarea>
+    <textarea id="reason1" placeholder="例：いつも青系の服を選んでいる、青が好きとよく言っていた…など"></textarea>
+  </div>
+
+  <!-- ── 区切り ── -->
+  <div class="color-section-divider"></div>
+
+  <!-- ── 色②：らしい色 ── -->
+  <div class="color-section-header">
+    <div class="color-section-num">② その人らしい色</div>
+    <p class="color-section-desc">好きな色とは関係なく、<strong>その人の性格・雰囲気・印象</strong>から連想される色を選んでください。<br><span class="color-section-hint">例）明るくて元気な人→オレンジ、穏やかで落ち着いた人→くすみブルー…など</span></p>
+  </div>
+
+  <div class="wheel-area">
+    <div class="wheel-wrapper">
+      <canvas id="colorWheel2"></canvas>
+      <div id="cursor-dot2"></div>
+    </div>
+  </div>
+
+  <div class="card slider-card">
+    <div class="slider-tips">
+      <span class="slider-tip"><span class="tip-swatch" style="background:#fff;"></span>白・パステル</span>
+      <span class="slider-tip" style="color:var(--muted);font-size:11px;">← 明るさを調節 →</span>
+      <span class="slider-tip" style="flex-direction:row-reverse;"><span class="tip-swatch" style="background:#1a1a1a;border-color:#333;"></span>暗い・黒</span>
+    </div>
+    <div class="lightness-track" id="lightnessTrack2">
+      <canvas id="lightnessCanvas2"></canvas>
+      <div class="slider-thumb" id="sliderThumb2"></div>
+    </div>
+  </div>
+
+  <div class="card panel-color">
+    <div class="color-preview-row">
+      <div id="color-swatch2"></div>
+      <div class="color-info">
+        <div class="color-label">② その人らしい色</div>
+        <div id="colorCode2">#——————</div>
+      </div>
+    </div>
+    <div class="rgb-row">
+      <div class="rgb-chip"><div class="ch">R</div><div class="val" id="val-r2">—</div></div>
+      <div class="rgb-chip"><div class="ch">G</div><div class="val" id="val-g2">—</div></div>
+      <div class="rgb-chip"><div class="ch">B</div><div class="val" id="val-b2">—</div></div>
+    </div>
+  </div>
+
+  <div class="card reason-card">
+    <div class="card-label">② なぜその色を選びましたか？<span class="required">必須</span></div>
+    <p class="reason-hint">その色を選んだ理由を、できるだけ詳しく教えていただけると大変助かります</p>
+    <textarea id="reason2" placeholder="例：穏やかで落ち着いた印象があるから、いつも明るく元気な雰囲気だから…など"></textarea>
   </div>
 
   <button class="btn-primary" onclick="goToConfirm(event)">内容を確認する →</button>
@@ -466,10 +541,15 @@
     <div class="confirm-row"><div class="confirm-key">対象者</div><div class="confirm-val" id="cf-name">—</div></div>
     <div class="confirm-row"><div class="confirm-key">関係性</div><div class="confirm-val" id="cf-relation">—</div></div>
     <div class="confirm-row">
-      <div class="confirm-key">カラーコード</div>
-      <div class="confirm-val"><div class="confirm-color-row"><div class="confirm-swatch" id="cf-swatch"></div><span class="confirm-hex" id="cf-hex">—</span></div></div>
+      <div class="confirm-key">好きな色</div>
+      <div class="confirm-val"><div class="confirm-color-row"><div class="confirm-swatch" id="cf-swatch1"></div><span class="confirm-hex" id="cf-hex1">—</span></div></div>
     </div>
-    <div class="confirm-row"><div class="confirm-key">理由</div><div class="confirm-val" id="cf-reason">—</div></div>
+    <div class="confirm-row"><div class="confirm-key">好きな色の理由</div><div class="confirm-val" id="cf-reason1">—</div></div>
+    <div class="confirm-row">
+      <div class="confirm-key">らしい色</div>
+      <div class="confirm-val"><div class="confirm-color-row"><div class="confirm-swatch" id="cf-swatch2"></div><span class="confirm-hex" id="cf-hex2">—</span></div></div>
+    </div>
+    <div class="confirm-row"><div class="confirm-key">らしい色の理由</div><div class="confirm-val" id="cf-reason2">—</div></div>
   </div>
   <button class="btn-primary" onclick="submitData(event)">送信する ✓</button>
   <button class="btn-back" onclick="goBack('screen-main')">← 戻って修正する</button>
@@ -489,10 +569,15 @@
       <div class="confirm-row" style="padding-top:0;"><div class="confirm-key">対象者</div><div class="confirm-val" id="done-name">—</div></div>
       <div class="confirm-row"><div class="confirm-key">関係性</div><div class="confirm-val" id="done-relation">—</div></div>
       <div class="confirm-row">
-        <div class="confirm-key">カラーコード</div>
-        <div class="confirm-val"><div class="confirm-color-row"><div class="confirm-swatch" id="done-swatch"></div><span class="confirm-hex" id="done-hex">—</span></div></div>
+        <div class="confirm-key">好きな色</div>
+        <div class="confirm-val"><div class="confirm-color-row"><div class="confirm-swatch" id="done-swatch1"></div><span class="confirm-hex" id="done-hex1">—</span></div></div>
       </div>
-      <div class="confirm-row"><div class="confirm-key">理由</div><div class="confirm-val" id="done-reason">—</div></div>
+      <div class="confirm-row"><div class="confirm-key">好きな色の理由</div><div class="confirm-val" id="done-reason1">—</div></div>
+      <div class="confirm-row">
+        <div class="confirm-key">らしい色</div>
+        <div class="confirm-val"><div class="confirm-color-row"><div class="confirm-swatch" id="done-swatch2"></div><span class="confirm-hex" id="done-hex2">—</span></div></div>
+      </div>
+      <div class="confirm-row"><div class="confirm-key">らしい色の理由</div><div class="confirm-val" id="done-reason2">—</div></div>
     </div>
     <div class="footer" style="margin-top:0;">
       <div class="footer-privacy">✦ いただいた情報は研究目的のみに使用し、<br>それ以外の目的では一切使用いたしません。</div>
@@ -520,91 +605,134 @@ function createRipple(el,e){
   setTimeout(()=>r.remove(),600);
 }
 
-const wheelCanvas=document.getElementById('colorWheel');
-const wCtx=wheelCanvas.getContext('2d');
-const dot=document.getElementById('cursor-dot');
-const swEl=document.getElementById('color-swatch');
-const codeEl=document.getElementById('colorCode');
-const toastEl=document.getElementById('toast');
-const lTrack=document.getElementById('lightnessTrack');
-const lCanvas=document.getElementById('lightnessCanvas');
-const lCtx=lCanvas.getContext('2d');
-const thumb=document.getElementById('sliderThumb');
-
-const WSIZE=Math.min(window.innerWidth-80,280);
-wheelCanvas.width=WSIZE;wheelCanvas.height=WSIZE;
-const R=WSIZE/2;
-let lightness=0.5,pickedHue=0,pickedSat=0,selectedHex=null,selectedRelation=null;
-
+// ─── カラーピッカー共通関数 ───
 function hsl2rgb(h,s,l){if(!s){const v=Math.round(l*255);return[v,v,v];}const q=l<.5?l*(1+s):l+s-l*s,p=2*l-q;return[h2r(p,q,h+1/3),h2r(p,q,h),h2r(p,q,h-1/3)].map(x=>Math.round(x*255));}
 function h2r(p,q,t){if(t<0)t+=1;if(t>1)t-=1;if(t<1/6)return p+(q-p)*6*t;if(t<.5)return q;if(t<2/3)return p+(q-p)*(2/3-t)*6;return p;}
 function toHex(v){return Math.round(v).toString(16).padStart(2,'0');}
 function rgbToHex(r,g,b){return`#${toHex(r)}${toHex(g)}${toHex(b)}`;}
 
-function drawWheel(){const img=wCtx.createImageData(WSIZE,WSIZE),d=img.data,L=lightness;for(let y=0;y<WSIZE;y++){for(let x=0;x<WSIZE;x++){const dx=x-R,dy=y-R,dist=Math.sqrt(dx*dx+dy*dy);if(dist>R)continue;const hue=((Math.atan2(dy,dx)*180/Math.PI)+360)%360;const[r,g,b]=hsl2rgb(hue/360,dist/R,L);const alpha=dist>R-1.5?Math.max(0,(R-dist)/1.5):1;const i=(y*WSIZE+x)*4;d[i]=r;d[i+1]=g;d[i+2]=b;d[i+3]=Math.round(alpha*255);}}wCtx.putImageData(img,0,0);}
+// ─── ピッカー1（好きな色）───
+const wheelCanvas1=document.getElementById('colorWheel1');
+const wCtx1=wheelCanvas1.getContext('2d');
+const dot1=document.getElementById('cursor-dot1');
+const swEl1=document.getElementById('color-swatch1');
+const codeEl1=document.getElementById('colorCode1');
+const lTrack1=document.getElementById('lightnessTrack1');
+const lCanvas1=document.getElementById('lightnessCanvas1');
+const lCtx1=lCanvas1.getContext('2d');
+const thumb1=document.getElementById('sliderThumb1');
+const WSIZE=Math.min(window.innerWidth-80,280);
+wheelCanvas1.width=WSIZE;wheelCanvas1.height=WSIZE;
+const R=WSIZE/2;
+let lightness1=0.5,pickedHue1=0,pickedSat1=0,selectedHex1=null;
 
-function drawLightnessBar(){const W=lCanvas.width,H=lCanvas.height;const mid=hsl2rgb(pickedHue/360,Math.max(pickedSat,0.7),0.5);const grad=lCtx.createLinearGradient(0,0,W,0);grad.addColorStop(0,'#ffffff');grad.addColorStop(0.5,`rgb(${mid[0]},${mid[1]},${mid[2]})`);grad.addColorStop(1,'#1a1a1a');lCtx.clearRect(0,0,W,H);lCtx.fillStyle=grad;const rr=H/2;lCtx.beginPath();lCtx.moveTo(rr,0);lCtx.lineTo(W-rr,0);lCtx.quadraticCurveTo(W,0,W,rr);lCtx.lineTo(W,H-rr);lCtx.quadraticCurveTo(W,H,W-rr,H);lCtx.lineTo(rr,H);lCtx.quadraticCurveTo(0,H,0,H-rr);lCtx.lineTo(0,rr);lCtx.quadraticCurveTo(0,0,rr,0);lCtx.fill();}
-function updateThumb(){const W=lTrack.offsetWidth;thumb.style.left=((1-lightness)*W)+'px';const[r,g,b]=hsl2rgb(pickedHue/360,pickedSat,lightness);thumb.style.background=`rgb(${r},${g},${b})`;}
+function drawWheel1(){const img=wCtx1.createImageData(WSIZE,WSIZE),d=img.data,L=lightness1;for(let y=0;y<WSIZE;y++){for(let x=0;x<WSIZE;x++){const dx=x-R,dy=y-R,dist=Math.sqrt(dx*dx+dy*dy);if(dist>R)continue;const hue=((Math.atan2(dy,dx)*180/Math.PI)+360)%360;const[r,g,b]=hsl2rgb(hue/360,dist/R,L);const alpha=dist>R-1.5?Math.max(0,(R-dist)/1.5):1;const i=(y*WSIZE+x)*4;d[i]=r;d[i+1]=g;d[i+2]=b;d[i+3]=Math.round(alpha*255);}}wCtx1.putImageData(img,0,0);}
+function drawLightnessBar1(){const W=lCanvas1.width,H=lCanvas1.height;const mid=hsl2rgb(pickedHue1/360,Math.max(pickedSat1,0.7),0.5);const grad=lCtx1.createLinearGradient(0,0,W,0);grad.addColorStop(0,'#ffffff');grad.addColorStop(0.5,`rgb(${mid[0]},${mid[1]},${mid[2]})`);grad.addColorStop(1,'#1a1a1a');lCtx1.clearRect(0,0,W,H);lCtx1.fillStyle=grad;const rr=H/2;lCtx1.beginPath();lCtx1.moveTo(rr,0);lCtx1.lineTo(W-rr,0);lCtx1.quadraticCurveTo(W,0,W,rr);lCtx1.lineTo(W,H-rr);lCtx1.quadraticCurveTo(W,H,W-rr,H);lCtx1.lineTo(rr,H);lCtx1.quadraticCurveTo(0,H,0,H-rr);lCtx1.lineTo(0,rr);lCtx1.quadraticCurveTo(0,0,rr,0);lCtx1.fill();}
+function updateThumb1(){const W=lTrack1.offsetWidth;thumb1.style.left=((1-lightness1)*W)+'px';const[r,g,b]=hsl2rgb(pickedHue1/360,pickedSat1,lightness1);thumb1.style.background=`rgb(${r},${g},${b})`;}
+function pickFromWheel1(ex,ey){const rect=wheelCanvas1.getBoundingClientRect();const sx=WSIZE/rect.width,sy=WSIZE/rect.height;const x=(ex-rect.left)*sx,y=(ey-rect.top)*sy;const dx=x-R,dy=y-R;if(Math.sqrt(dx*dx+dy*dy)>R)return;dot1.style.left=(x/sx)+'px';dot1.style.top=(y/sy)+'px';dot1.style.opacity='1';pickedHue1=((Math.atan2(dy,dx)*180/Math.PI)+360)%360;pickedSat1=Math.sqrt(dx*dx+dy*dy)/R;updateColor1();drawLightnessBar1();updateThumb1();}
+function pickFromSlider1(ex){const rect=lTrack1.getBoundingClientRect();lightness1=1-Math.max(0,Math.min(1,(ex-rect.left)/rect.width));updateColor1();drawWheel1();updateThumb1();}
+function updateColor1(){const[r,g,b]=hsl2rgb(pickedHue1/360,pickedSat1,lightness1);const hex=rgbToHex(r,g,b).toUpperCase();selectedHex1=hex;swEl1.style.background=hex;dot1.style.background=hex;codeEl1.textContent=hex;document.getElementById('val-r1').textContent=r;document.getElementById('val-g1').textContent=g;document.getElementById('val-b1').textContent=b;swEl1.classList.remove('pop');void swEl1.offsetWidth;swEl1.classList.add('pop');}
 
-function pickFromWheel(ex,ey){const rect=wheelCanvas.getBoundingClientRect();const sx=WSIZE/rect.width,sy=WSIZE/rect.height;const x=(ex-rect.left)*sx,y=(ey-rect.top)*sy;const dx=x-R,dy=y-R;if(Math.sqrt(dx*dx+dy*dy)>R)return;dot.style.left=(x/sx)+'px';dot.style.top=(y/sy)+'px';dot.style.opacity='1';pickedHue=((Math.atan2(dy,dx)*180/Math.PI)+360)%360;pickedSat=Math.sqrt(dx*dx+dy*dy)/R;updateColor();drawLightnessBar();updateThumb();}
-function pickFromSlider(ex){const rect=lTrack.getBoundingClientRect();lightness=1-Math.max(0,Math.min(1,(ex-rect.left)/rect.width));updateColor();drawWheel();updateThumb();}
-function updateColor(){const[r,g,b]=hsl2rgb(pickedHue/360,pickedSat,lightness);const hex=rgbToHex(r,g,b).toUpperCase();selectedHex=hex;swEl.style.background=hex;dot.style.background=hex;codeEl.textContent=hex;document.getElementById('val-r').textContent=r;document.getElementById('val-g').textContent=g;document.getElementById('val-b').textContent=b;swEl.classList.remove('pop');void swEl.offsetWidth;swEl.classList.add('pop');}
+wheelCanvas1.addEventListener('mousedown',e=>pickFromWheel1(e.clientX,e.clientY));
+wheelCanvas1.addEventListener('mousemove',e=>{if(e.buttons)pickFromWheel1(e.clientX,e.clientY);});
+wheelCanvas1.addEventListener('touchstart',e=>{e.preventDefault();pickFromWheel1(e.touches[0].clientX,e.touches[0].clientY);},{passive:false});
+wheelCanvas1.addEventListener('touchmove',e=>{e.preventDefault();pickFromWheel1(e.touches[0].clientX,e.touches[0].clientY);},{passive:false});
+lTrack1.addEventListener('mousedown',e=>pickFromSlider1(e.clientX));
+lTrack1.addEventListener('mousemove',e=>{if(e.buttons)pickFromSlider1(e.clientX);});
+lTrack1.addEventListener('touchstart',e=>{e.preventDefault();pickFromSlider1(e.touches[0].clientX);},{passive:false});
+lTrack1.addEventListener('touchmove',e=>{e.preventDefault();pickFromSlider1(e.touches[0].clientX);},{passive:false});
 
-wheelCanvas.addEventListener('mousedown',e=>pickFromWheel(e.clientX,e.clientY));
-wheelCanvas.addEventListener('mousemove',e=>{if(e.buttons)pickFromWheel(e.clientX,e.clientY);});
-wheelCanvas.addEventListener('touchstart',e=>{e.preventDefault();pickFromWheel(e.touches[0].clientX,e.touches[0].clientY);},{passive:false});
-wheelCanvas.addEventListener('touchmove',e=>{e.preventDefault();pickFromWheel(e.touches[0].clientX,e.touches[0].clientY);},{passive:false});
-lTrack.addEventListener('mousedown',e=>pickFromSlider(e.clientX));
-lTrack.addEventListener('mousemove',e=>{if(e.buttons)pickFromSlider(e.clientX);});
-lTrack.addEventListener('touchstart',e=>{e.preventDefault();pickFromSlider(e.touches[0].clientX);},{passive:false});
-lTrack.addEventListener('touchmove',e=>{e.preventDefault();pickFromSlider(e.touches[0].clientX);},{passive:false});
+// ─── ピッカー2（らしい色）───
+const wheelCanvas2=document.getElementById('colorWheel2');
+const wCtx2=wheelCanvas2.getContext('2d');
+const dot2=document.getElementById('cursor-dot2');
+const swEl2=document.getElementById('color-swatch2');
+const codeEl2=document.getElementById('colorCode2');
+const lTrack2=document.getElementById('lightnessTrack2');
+const lCanvas2=document.getElementById('lightnessCanvas2');
+const lCtx2=lCanvas2.getContext('2d');
+const thumb2=document.getElementById('sliderThumb2');
+wheelCanvas2.width=WSIZE;wheelCanvas2.height=WSIZE;
+let lightness2=0.5,pickedHue2=0,pickedSat2=0,selectedHex2=null;
+
+function drawWheel2(){const img=wCtx2.createImageData(WSIZE,WSIZE),d=img.data,L=lightness2;for(let y=0;y<WSIZE;y++){for(let x=0;x<WSIZE;x++){const dx=x-R,dy=y-R,dist=Math.sqrt(dx*dx+dy*dy);if(dist>R)continue;const hue=((Math.atan2(dy,dx)*180/Math.PI)+360)%360;const[r,g,b]=hsl2rgb(hue/360,dist/R,L);const alpha=dist>R-1.5?Math.max(0,(R-dist)/1.5):1;const i=(y*WSIZE+x)*4;d[i]=r;d[i+1]=g;d[i+2]=b;d[i+3]=Math.round(alpha*255);}}wCtx2.putImageData(img,0,0);}
+function drawLightnessBar2(){const W=lCanvas2.width,H=lCanvas2.height;const mid=hsl2rgb(pickedHue2/360,Math.max(pickedSat2,0.7),0.5);const grad=lCtx2.createLinearGradient(0,0,W,0);grad.addColorStop(0,'#ffffff');grad.addColorStop(0.5,`rgb(${mid[0]},${mid[1]},${mid[2]})`);grad.addColorStop(1,'#1a1a1a');lCtx2.clearRect(0,0,W,H);lCtx2.fillStyle=grad;const rr=H/2;lCtx2.beginPath();lCtx2.moveTo(rr,0);lCtx2.lineTo(W-rr,0);lCtx2.quadraticCurveTo(W,0,W,rr);lCtx2.lineTo(W,H-rr);lCtx2.quadraticCurveTo(W,H,W-rr,H);lCtx2.lineTo(rr,H);lCtx2.quadraticCurveTo(0,H,0,H-rr);lCtx2.lineTo(0,rr);lCtx2.quadraticCurveTo(0,0,rr,0);lCtx2.fill();}
+function updateThumb2(){const W=lTrack2.offsetWidth;thumb2.style.left=((1-lightness2)*W)+'px';const[r,g,b]=hsl2rgb(pickedHue2/360,pickedSat2,lightness2);thumb2.style.background=`rgb(${r},${g},${b})`;}
+function pickFromWheel2(ex,ey){const rect=wheelCanvas2.getBoundingClientRect();const sx=WSIZE/rect.width,sy=WSIZE/rect.height;const x=(ex-rect.left)*sx,y=(ey-rect.top)*sy;const dx=x-R,dy=y-R;if(Math.sqrt(dx*dx+dy*dy)>R)return;dot2.style.left=(x/sx)+'px';dot2.style.top=(y/sy)+'px';dot2.style.opacity='1';pickedHue2=((Math.atan2(dy,dx)*180/Math.PI)+360)%360;pickedSat2=Math.sqrt(dx*dx+dy*dy)/R;updateColor2();drawLightnessBar2();updateThumb2();}
+function pickFromSlider2(ex){const rect=lTrack2.getBoundingClientRect();lightness2=1-Math.max(0,Math.min(1,(ex-rect.left)/rect.width));updateColor2();drawWheel2();updateThumb2();}
+function updateColor2(){const[r,g,b]=hsl2rgb(pickedHue2/360,pickedSat2,lightness2);const hex=rgbToHex(r,g,b).toUpperCase();selectedHex2=hex;swEl2.style.background=hex;dot2.style.background=hex;codeEl2.textContent=hex;document.getElementById('val-r2').textContent=r;document.getElementById('val-g2').textContent=g;document.getElementById('val-b2').textContent=b;swEl2.classList.remove('pop');void swEl2.offsetWidth;swEl2.classList.add('pop');}
+
+wheelCanvas2.addEventListener('mousedown',e=>pickFromWheel2(e.clientX,e.clientY));
+wheelCanvas2.addEventListener('mousemove',e=>{if(e.buttons)pickFromWheel2(e.clientX,e.clientY);});
+wheelCanvas2.addEventListener('touchstart',e=>{e.preventDefault();pickFromWheel2(e.touches[0].clientX,e.touches[0].clientY);},{passive:false});
+wheelCanvas2.addEventListener('touchmove',e=>{e.preventDefault();pickFromWheel2(e.touches[0].clientX,e.touches[0].clientY);},{passive:false});
+lTrack2.addEventListener('mousedown',e=>pickFromSlider2(e.clientX));
+lTrack2.addEventListener('mousemove',e=>{if(e.buttons)pickFromSlider2(e.clientX);});
+lTrack2.addEventListener('touchstart',e=>{e.preventDefault();pickFromSlider2(e.touches[0].clientX);},{passive:false});
+lTrack2.addEventListener('touchmove',e=>{e.preventDefault();pickFromSlider2(e.touches[0].clientX);},{passive:false});
+
+// ─── 共通ロジック ───
+const toastEl=document.getElementById('toast');
+let selectedRelation=null;
 
 function selectRelation(btn,e){createRipple(btn,e);document.querySelectorAll('.relation-btn').forEach(b=>b.classList.remove('selected'));btn.classList.add('selected');selectedRelation=btn.dataset.value;}
-
 function showScreen(id){document.querySelectorAll('.screen').forEach(s=>{s.classList.remove('active');s.style.animation='none';});const t=document.getElementById(id);void t.offsetWidth;t.style.animation='';t.classList.add('active');window.scrollTo({top:0,behavior:'smooth'});}
 function goBack(id){showScreen(id);}
-
 function showToast(msg){toastEl.textContent=msg;toastEl.classList.add('show');setTimeout(()=>toastEl.classList.remove('show'),2500);}
 
 function goToConfirm(e){
   createRipple(e.currentTarget,e);
   const name=document.getElementById('targetName').value.trim();
-  const reason=document.getElementById('reason').value.trim();
+  const reason1=document.getElementById('reason1').value.trim();
+  const reason2=document.getElementById('reason2').value.trim();
   if(!name){showToast('対象者のお名前を入力してください');return;}
   if(!selectedRelation){showToast('関係性を選んでください');return;}
-  if(!selectedHex){showToast('色を選んでください');return;}
-  if(!reason){showToast('色を選んだ理由を入力してください');return;}
+  if(!selectedHex1){showToast('① 好きな色を選んでください');return;}
+  if(!reason1){showToast('① 好きな色を選んだ理由を入力してください');return;}
+  if(!selectedHex2){showToast('② その人らしい色を選んでください');return;}
+  if(!reason2){showToast('② その人らしい色の理由を入力してください');return;}
   document.getElementById('cf-name').textContent=name;
   document.getElementById('cf-relation').textContent=selectedRelation;
-  document.getElementById('cf-swatch').style.background=selectedHex;
-  document.getElementById('cf-hex').textContent=selectedHex;
-  document.getElementById('cf-reason').textContent=reason;
+  document.getElementById('cf-swatch1').style.background=selectedHex1;
+  document.getElementById('cf-hex1').textContent=selectedHex1;
+  document.getElementById('cf-reason1').textContent=reason1;
+  document.getElementById('cf-swatch2').style.background=selectedHex2;
+  document.getElementById('cf-hex2').textContent=selectedHex2;
+  document.getElementById('cf-reason2').textContent=reason2;
   setTimeout(()=>showScreen('screen-confirm'),150);
 }
 
 function submitData(e){
   createRipple(e.currentTarget,e);
   const name=document.getElementById('targetName').value.trim();
-  const reason=document.getElementById('reason').value.trim();
+  const reason1=document.getElementById('reason1').value.trim();
+  const reason2=document.getElementById('reason2').value.trim();
   const formUrl='https://docs.google.com/forms/d/e/1FAIpQLSesTuwlDuP_rebS3V8_owbZBRb3krBV_Fi7raA71DchsQH_dw/formResponse';
   const body=new URLSearchParams();
   body.set('entry.2030869641',name);
   body.set('entry.2073338491',selectedRelation);
-  body.set('entry.1955355819',selectedHex);
-  body.set('entry.184192488',reason);
+  body.set('entry.582904287',selectedHex1);
+  body.set('entry.609569158',reason1);
+  body.set('entry.1955355819',selectedHex2);
+  body.set('entry.184192488',reason2);
   fetch(formUrl,{method:'POST',mode:'no-cors',headers:{'Content-Type':'application/x-www-form-urlencoded'},body:body.toString()}).catch(()=>{});
   document.getElementById('done-name').textContent=name;
   document.getElementById('done-relation').textContent=selectedRelation;
-  document.getElementById('done-swatch').style.background=selectedHex;
-  document.getElementById('done-hex').textContent=selectedHex;
-  document.getElementById('done-reason').textContent=reason;
+  document.getElementById('done-swatch1').style.background=selectedHex1;
+  document.getElementById('done-hex1').textContent=selectedHex1;
+  document.getElementById('done-reason1').textContent=reason1;
+  document.getElementById('done-swatch2').style.background=selectedHex2;
+  document.getElementById('done-hex2').textContent=selectedHex2;
+  document.getElementById('done-reason2').textContent=reason2;
   showScreen('screen-complete');
-  setTimeout(()=>showScreen('screen-complete'),150);
 }
 
-drawWheel();
-drawLightnessBar();
-updateThumb();
+drawWheel1();
+drawLightnessBar1();
+updateThumb1();
+drawWheel2();
+drawLightnessBar2();
+updateThumb2();
 </script>
 </body>
 </html>
