@@ -382,7 +382,7 @@
   <!-- 吹き出し -->
   <div class="intro-bubble">
     はじめまして！九州大学大学院で<strong>デザイン研究</strong>をしている、田島萌絵です🌿<br><br>
-    私は<span class="highlight">「その人らしさ」を起点としたプロダクトデザイン</span>の方法論を研究しています。<br><br>
+    私は<span class="highlight">「その人らしさ」を起点としたデザイン</span>の方法論を研究しています。<br><br>
     このアンケートでは、ある人を思い浮かべて<strong>2つの色</strong>を選んでいただきます。① その人が<strong>好きな色</strong>、② その人の性格・雰囲気・印象から連想される<strong>その人らしい色</strong>です。集めた色のデータを通じて、その人らしさをデザインに繋げる方法を探っています。<br><br>
     その色を選んだ理由も教えてくださるとありがたいです！
   </div>
@@ -430,6 +430,21 @@
     <p class="color-section-desc">その人が<strong>普段好んで選ぶ色・お気に入りの色</strong>をイメージして選んでください。<br><span class="color-section-hint">例）いつも青系の服を着ている、赤が好きとよく言っている…など</span></p>
   </div>
 
+  <div class="card panel-color">
+    <div class="color-preview-row">
+      <div id="color-swatch1"></div>
+      <div class="color-info">
+        <div class="color-label">① 好きな色</div>
+        <div id="colorCode1">#——————</div>
+      </div>
+    </div>
+    <div class="rgb-row">
+      <div class="rgb-chip"><div class="ch">R</div><div class="val" id="val-r1">—</div></div>
+      <div class="rgb-chip"><div class="ch">G</div><div class="val" id="val-g1">—</div></div>
+      <div class="rgb-chip"><div class="ch">B</div><div class="val" id="val-b1">—</div></div>
+    </div>
+  </div>
+
   <div class="wheel-area">
     <div class="wheel-wrapper">
       <canvas id="colorWheel1"></canvas>
@@ -449,21 +464,6 @@
     </div>
   </div>
 
-  <div class="card panel-color">
-    <div class="color-preview-row">
-      <div id="color-swatch1"></div>
-      <div class="color-info">
-        <div class="color-label">① 好きな色</div>
-        <div id="colorCode1">#——————</div>
-      </div>
-    </div>
-    <div class="rgb-row">
-      <div class="rgb-chip"><div class="ch">R</div><div class="val" id="val-r1">—</div></div>
-      <div class="rgb-chip"><div class="ch">G</div><div class="val" id="val-g1">—</div></div>
-      <div class="rgb-chip"><div class="ch">B</div><div class="val" id="val-b1">—</div></div>
-    </div>
-  </div>
-
   <div class="card reason-card">
     <div class="card-label">① なぜその色を選びましたか？<span class="required">必須</span></div>
     <p class="reason-hint">その色を選んだ理由を、できるだけ詳しく教えていただけると大変助かります</p>
@@ -477,6 +477,21 @@
   <div class="color-section-header">
     <div class="color-section-num">② その人らしい色</div>
     <p class="color-section-desc">好きな色とは関係なく、<strong>その人の性格・雰囲気・印象</strong>から連想される色を選んでください。<br><span class="color-section-hint">例）明るくて元気な人→オレンジ、穏やかで落ち着いた人→くすみブルー…など</span></p>
+  </div>
+
+  <div class="card panel-color">
+    <div class="color-preview-row">
+      <div id="color-swatch2"></div>
+      <div class="color-info">
+        <div class="color-label">② その人らしい色</div>
+        <div id="colorCode2">#——————</div>
+      </div>
+    </div>
+    <div class="rgb-row">
+      <div class="rgb-chip"><div class="ch">R</div><div class="val" id="val-r2">—</div></div>
+      <div class="rgb-chip"><div class="ch">G</div><div class="val" id="val-g2">—</div></div>
+      <div class="rgb-chip"><div class="ch">B</div><div class="val" id="val-b2">—</div></div>
+    </div>
   </div>
 
   <div class="wheel-area">
@@ -495,21 +510,6 @@
     <div class="lightness-track" id="lightnessTrack2">
       <canvas id="lightnessCanvas2"></canvas>
       <div class="slider-thumb" id="sliderThumb2"></div>
-    </div>
-  </div>
-
-  <div class="card panel-color">
-    <div class="color-preview-row">
-      <div id="color-swatch2"></div>
-      <div class="color-info">
-        <div class="color-label">② その人らしい色</div>
-        <div id="colorCode2">#——————</div>
-      </div>
-    </div>
-    <div class="rgb-row">
-      <div class="rgb-chip"><div class="ch">R</div><div class="val" id="val-r2">—</div></div>
-      <div class="rgb-chip"><div class="ch">G</div><div class="val" id="val-g2">—</div></div>
-      <div class="rgb-chip"><div class="ch">B</div><div class="val" id="val-b2">—</div></div>
     </div>
   </div>
 
