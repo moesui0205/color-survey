@@ -358,6 +358,10 @@
     .color-section-desc strong { color: var(--accent); font-weight: 500; }
     .color-section-hint { font-size: 11.5px; color: var(--muted); display: block; margin-top: 4px; }
     .color-section-divider { width: 100%; height: 1px; background: linear-gradient(to right, transparent, var(--border), transparent); margin: 28px 0; }
+    .check-options { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 4px; }
+    .check-btn { display: flex; align-items: center; gap: 6px; background: var(--soft); border: 1.5px solid var(--border); border-radius: 20px; padding: 7px 14px; font-size: 13px; color: var(--text-mid); cursor: pointer; transition: border-color 0.2s, background 0.2s, color 0.2s; font-family: var(--font-ja); font-weight: 300; }
+    .check-btn input[type="checkbox"] { display: none; }
+    .check-btn:has(input:checked) { background: var(--accent); border-color: var(--accent); color: #fff; }
     .toast { position: fixed; bottom: 28px; left: 50%; transform: translateX(-50%) translateY(16px); background: var(--text); color: #fff; padding: 11px 24px; border-radius: 100px; font-size: 12px; font-family: var(--font-ja); font-weight: 300; opacity: 0; transition: opacity 0.22s, transform 0.22s; pointer-events: none; white-space: nowrap; z-index: 200; }
     .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
   </style>
@@ -514,9 +518,20 @@
   </div>
 
   <div class="card reason-card">
-    <div class="card-label">② なぜその色を選びましたか？<span class="required">必須</span></div>
+    <div class="card-label">② その色はどんな要素から選びましたか？<span class="required">必須</span></div>
+    <p class="reason-hint">当てはまるものをすべて選んでください</p>
+    <div class="check-options" id="checkOptions">
+      <label class="check-btn"><input type="checkbox" value="性格・内面"><span>性格・内面</span></label>
+      <label class="check-btn"><input type="checkbox" value="雰囲気・オーラ"><span>雰囲気・オーラ</span></label>
+      <label class="check-btn"><input type="checkbox" value="見た目・ファッション"><span>見た目・ファッション</span></label>
+      <label class="check-btn"><input type="checkbox" value="話し方・口癖"><span>話し方・口癖</span></label>
+      <label class="check-btn"><input type="checkbox" value="思い出・エピソード"><span>思い出・エピソード</span></label>
+      <label class="check-btn" id="otherCheckLabel"><input type="checkbox" value="その他" id="otherCheck" onchange="toggleOtherInput()"><span>その他</span></label>
+    </div>
+    <input type="text" class="name-input" id="otherText" placeholder="その他の場合はこちらに入力してください" style="display:none;margin-top:10px;">
+    <div class="card-label" style="margin-top:20px;">もう少し詳しく教えてください<span class="required">必須</span></div>
     <p class="reason-hint">その色を選んだ理由を、できるだけ詳しく教えていただけると大変助かります</p>
-    <textarea id="reason2" placeholder="例：穏やかで落ち着いた印象があるから、いつも明るく元気な雰囲気だから…など"></textarea>
+    <textarea id="reason2" placeholder="例：いつも穏やかでそこにいるだけで安心できる人だから、温かみのあるベージュを選んだ…など"></textarea>
   </div>
 
   <button class="btn-primary" onclick="goToConfirm(event)">内容を確認する →</button>
@@ -675,6 +690,25 @@ lTrack2.addEventListener('touchmove',e=>{e.preventDefault();pickFromSlider2(e.to
 const toastEl=document.getElementById('toast');
 let selectedRelation=null;
 
+function toggleOtherInput(){
+  const cb=document.getElementById('otherCheck');
+  const inp=document.getElementById('otherText');
+  inp.style.display=cb.checked?'block':'none';
+  if(!cb.checked) inp.value='';
+}
+
+function getCheckedValues(){
+  const checks=document.querySelectorAll('#checkOptions input[type="checkbox"]:checked');
+  const vals=Array.from(checks).map(c=>{
+    if(c.value==='その他'){
+      const other=document.getElementById('otherText').value.trim();
+      return other?`その他（${other}）`:'その他';
+    }
+    return c.value;
+  });
+  return vals.join('・');
+}
+
 function selectRelation(btn,e){createRipple(btn,e);document.querySelectorAll('.relation-btn').forEach(b=>b.classList.remove('selected'));btn.classList.add('selected');selectedRelation=btn.dataset.value;}
 function showScreen(id){document.querySelectorAll('.screen').forEach(s=>{s.classList.remove('active');s.style.animation='none';});const t=document.getElementById(id);void t.offsetWidth;t.style.animation='';t.classList.add('active');window.scrollTo({top:0,behavior:'smooth'});}
 function goBack(id){showScreen(id);}
@@ -690,15 +724,18 @@ function goToConfirm(e){
   if(!selectedHex1){showToast('① 好きな色を選んでください');return;}
   if(!reason1){showToast('① 好きな色を選んだ理由を入力してください');return;}
   if(!selectedHex2){showToast('② その人らしい色を選んでください');return;}
+  const checkedVals=getCheckedValues();
+  if(!checkedVals){showToast('② 色を選んだ要素を選択してください');return;}
   if(!reason2){showToast('② その人らしい色の理由を入力してください');return;}
   document.getElementById('cf-name').textContent=name;
   document.getElementById('cf-relation').textContent=selectedRelation;
   document.getElementById('cf-swatch1').style.background=selectedHex1;
   document.getElementById('cf-hex1').textContent=selectedHex1;
   document.getElementById('cf-reason1').textContent=reason1;
+  const checkedVals2=getCheckedValues();
   document.getElementById('cf-swatch2').style.background=selectedHex2;
   document.getElementById('cf-hex2').textContent=selectedHex2;
-  document.getElementById('cf-reason2').textContent=reason2;
+  document.getElementById('cf-reason2').textContent=checkedVals2+'｜'+reason2;
   setTimeout(()=>showScreen('screen-confirm'),150);
 }
 
@@ -714,6 +751,16 @@ function submitData(e){
   body.set('entry.582904287',selectedHex1);
   body.set('entry.609569158',reason1);
   body.set('entry.1955355819',selectedHex2);
+  // 選択肢を複数のentry.421915288で送信
+  const checks=document.querySelectorAll('#checkOptions input[type="checkbox"]:checked');
+  checks.forEach(c=>{
+    let val=c.value;
+    if(val==='その他'){
+      const other=document.getElementById('otherText').value.trim();
+      if(other) val=`その他（${other}）`;
+    }
+    body.append('entry.421915288',val);
+  });
   body.set('entry.184192488',reason2);
   fetch(formUrl,{method:'POST',mode:'no-cors',headers:{'Content-Type':'application/x-www-form-urlencoded'},body:body.toString()}).catch(()=>{});
   document.getElementById('done-name').textContent=name;
@@ -723,7 +770,7 @@ function submitData(e){
   document.getElementById('done-reason1').textContent=reason1;
   document.getElementById('done-swatch2').style.background=selectedHex2;
   document.getElementById('done-hex2').textContent=selectedHex2;
-  document.getElementById('done-reason2').textContent=reason2;
+  document.getElementById('done-reason2').textContent=getCheckedValues()+'｜'+reason2;
   showScreen('screen-complete');
 }
 
