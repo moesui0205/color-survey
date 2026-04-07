@@ -711,7 +711,7 @@ function getCheckedValues(){
 function selectRelation(btn,e){createRipple(btn,e);document.querySelectorAll('.relation-btn').forEach(b=>b.classList.remove('selected'));btn.classList.add('selected');selectedRelation=btn.dataset.value;}
 function showScreen(id){document.querySelectorAll('.screen').forEach(s=>{s.classList.remove('active');s.style.animation='none';});const t=document.getElementById(id);void t.offsetWidth;t.style.animation='';t.classList.add('active');window.scrollTo({top:0,behavior:'smooth'});}
 function goBack(id){showScreen(id);}
-function showToast(msg){toastEl.textContent=msg;toastEl.classList.add('show');setTimeout(()=>toastEl.classList.remove('show'),2500);}
+function showToast(msg,dur=2500){toastEl.textContent=msg;toastEl.classList.add('show');setTimeout(()=>toastEl.classList.remove('show'),dur);}
 
 function goToConfirm(e){
   createRipple(e.currentTarget,e);
@@ -761,7 +761,18 @@ function submitData(e){
     body.append('entry.421915288',val);
   });
   body.set('entry.184192488',reason2);
-  fetch(formUrl,{method:'POST',mode:'no-cors',headers:{'Content-Type':'application/x-www-form-urlencoded'},body:body.toString()}).catch(()=>{});
+  async function sendWithRetry(url, bodyStr, maxRetry=3){
+    for(let i=0;i<maxRetry;i++){
+      try{
+        await fetch(url,{method:'POST',mode:'no-cors',headers:{'Content-Type':'application/x-www-form-urlencoded'},body:bodyStr});
+        return true;
+      }catch(e){
+        if(i<maxRetry-1) await new Promise(r=>setTimeout(r,1500));
+      }
+    }
+    return false;
+  }
+  sendWithRetry(formUrl, body.toString());
   document.getElementById('done-name').textContent=name;
   document.getElementById('done-relation').textContent=selectedRelation;
   document.getElementById('done-swatch1').style.background=selectedHex1;
